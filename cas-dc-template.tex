@@ -41,24 +41,22 @@
 \shorttitle{Leveraging social media news}
 \shortauthors{CV Radhakrishnan et~al.}
 
-\title [mode = title]{This is a specimen $a_b$ title}                      
+\title [mode = title]{Fingerprint Reconstruction Using a Convolutional Generative Adversarial Model}                     
 \tnotemark[1,2]
 
 \tnotetext[1]{This document is the results of the research project funded by the National Science Foundation.}
-
 \tnotetext[2]{The second title footnote which is a longer text matter to fill through the whole text width and overflow into another line in the footnotes area of the first page.}
 
 % AUTHOR 1
-\author[1,3]{CV Radhakrishnan}
+\author[1,3]{Cristian Yesid Andrade Hernández}
 [type=editor,
 auid=000,bioid=1,
 prefix=Sir,
-role=Researcher,
+role=Student,
 orcid=0000-0001-7511-2910]
-
 \cormark[1]
 \fnmark[1]
-\ead{cvr_1@tug.org.in}
+\ead{cy.andrade@uniandes.edu.co}
 \ead[url]{www.cvr.cc, cvr@sayahna.org}
 \credit{Conceptualization of this study, Methodology, Software}
 \address[1]{Elsevier B.V., Radarweg 29, 1043 NX Amsterdam, The Netherlands}
@@ -67,20 +65,19 @@ orcid=0000-0001-7511-2910]
 \author[2,4]{Han Theh Thanh}
 [style=chinese]
 
+% AUTHOR 3
 \author[2,3]{CV Rajagopal}
 [role=Co-ordinator,
 suffix=Jr,]
 \fnmark[2]
 \ead{cvr3@sayahna.org}
 \ead[URL]{www.sayahna.org}
-
 \credit{Data curation, Writing - Original draft preparation}
 \address[2]{Sayahna Foundation, Jagathy, Trivandrum 695014, India}
 
-% AUTHOR 3
+% AUTHOR 4
 \author
-[1,3]
-{Rishi T.}
+[1,3]{Rishi T.}
 \cormark[2]
 \fnmark[1,3]
 \ead{rishi@stmdocs.in}
@@ -117,13 +114,13 @@ fingerprint \sep enhancement \sep generative \sep adversarial \sep convolutional
 
 \section{Introduction}
 
-The minutia based algorithms are the most widely used for fingerprint recognition. Minutiae are local ridge and valley characteristics of fingerprints such as endings and bifurcations \hyperref[sec:ref1]{\cite{b1}}. Each minutia is determined by four values: pixel position in vertical axis, pixel position in horizontal axis, orientation and quality\hyperref[sec:ref2]{\cite{b2}}. The algorithm computes a score based on the minutia of two fingerprints and if the score is above a certain threshold the fingerprints are determined to belong to the same person.
+The minutia based algorithms are the most widely used for fingerprint recognition. Minutiae are local ridge and valley characteristics of fingerprints such as endings and bifurcations \cite{HFPR}. Each minutia is determined by four values: pixel position in vertical axis, pixel position in horizontal axis, orientation and quality \cite{NBISUG}. The algorithm computes a score based on the minutia of two fingerprints and if the score is above a certain threshold the fingerprints are determined to belong to the same person.
 
 There are cases where quality of recorded fingerprints is poor due to factors like cut, wet, dry or burnt fingers, skin diseases, dirty scanning surfaces, incorrect pressure while scanning, among others. These factors remove real minutia or create false ones affecting the matching process. Fingerprint reconstruction and enhancement allow the algorithms to distinguish correctly between ridges and valleys, so real minutia is detected and identification accuracy improves.
 
 The solution proposed implements the Pix2Pix model which is a generative adversarial convolutional neural network that solves the image to image translation problem. It consists of a set of interconnected layers that receives an image as input, process it with convolutions and return the expected image as output. The parameters of the layer's filters are modified through an optimization process that minimize a cost function using a similarity measure and the adversarial training paradigm. 
 
-Two main frameworks were used to develop the project. TensorFlow machine learning platform was used to build and train the model. The second one is NIST Biometric Image Software (NBIS) an open source biometric framework with core capabilities on fingerprint image processing developed by the National Institute of Standards and Technology (NIST) for the Federal Bureau of Investigation (FBI) and Department of Homeland Security (DHS) \hyperref[sec:ref5]{\cite{b5}}. Three modules were used in the project: \textit{mindtct} to extract minutiae in format \textit{xyt} from a fingerprint, \textit{bozorth3} to compute a similarity score between either a pair or a list of pairs of minutiae using the bozorth algorithm and \textit{nfiq} to return a quality measure of digital fingerprints.
+Two main frameworks were used to develop the project. TensorFlow machine learning platform was used to build and train the model. The second one is NIST Biometric Image Software (NBIS) an open source biometric framework with core capabilities on fingerprint image processing developed by the National Institute of Standards and Technology (NIST) for the Federal Bureau of Investigation (FBI) and Department of Homeland Security (DHS) \cite{NBISWP}. Three modules were used in the project: \textit{mindtct} to extract minutiae in format \textit{xyt} from a fingerprint, \textit{bozorth3} to compute a similarity score between either a pair or a list of pairs of minutiae using the bozorth algorithm and \textit{nfiq} to return a quality measure of digital fingerprints.
 
 The paper follows the next organization: the source and preprocessing of training data is described in section \hyperref[sec:DP]{2}. Section \hyperref[sec:MA]{3} presents model architecture details. Training configuration is explained in section \hyperref[sec:MT]{4}. Section \hyperref[sec:R]{5} presents and analyses results. Finally, conclusion and future work are proposed in section \hyperref[sec:FW]{6} and \hyperref[sec:FW]{7} respectively.
      
@@ -159,9 +156,9 @@ Once the data is loaded and preprocessed, tuples are feeded into the model for m
 \section{Model Architecture}
 \label{sec:MA}
 
-Proposed architecture follows the guidelines of an image to image translation model called Pix2Pix \hyperref[sec:ref3]{\cite{b3}}. It is composed by a generator that receives the image to enhance as input and returns the reconstructed image as output and a discriminator that determines whether or not an image was successfully reconstructed. Both convolutional structures will be detailed next.
+Proposed architecture follows the guidelines of an image to image translation model called Pix2Pix \cite{ITITAN}. It is composed by a generator that receives the image to enhance as input and returns the reconstructed image as output and a discriminator that determines whether or not an image was successfully reconstructed. Both convolutional structures will be detailed next.
 
-Generator consists in a encoder and a decoder that configure an U-Net structure \hyperref[sec:ref4]{\cite{b4}}. The encoder is made up of eight sequentially connected convolutional layers that reduce the input height and width by a factor of two using same padding and strides of two. All layers use leakyrelu activation and batch normalization except for the first one. Similarly, decoder is made up of eight transpose convolutional layers, sometimes mistakenly called deconvolutional layers. In contrast to encoder, decoder layers increment by a factor of two height and width of input volumes which results in a final image of 256x256 pixels. All layers use batch normalization and relu activation and the first three layers use drop regularization. Fig.~\ref{fig4} shows a sketch of the generator and Table~\ref{tab1} of appendix specifies architecture details including number of filters on each layer.
+Generator consists in a encoder and a decoder that configure an U-Net structure \cite{UNBIS}. The encoder is made up of eight sequentially connected convolutional layers that reduce the input height and width by a factor of two using same padding and strides of two. All layers use leakyrelu activation and batch normalization except for the first one. Similarly, decoder is made up of eight transpose convolutional layers, sometimes mistakenly called deconvolutional layers. In contrast to encoder, decoder layers increment by a factor of two height and width of input volumes which results in a final image of 256x256 pixels. All layers use batch normalization and relu activation and the first three layers use drop regularization. Fig.~\ref{fig4} shows a sketch of the generator and Table~\ref{tab1} of appendix specifies architecture details including number of filters on each layer.
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[scale=0.37]{images/-.png}}
@@ -223,7 +220,7 @@ In contrast to previous results, there were some fingerprint examples that could
 \label{fig8}
 \end{figure}
 
-The first test was carried out using the Receiver Operating Characteristic (ROC), a well-accepted measure to express performance of 1:1 matchers \hyperref[sec:ref6]{\cite{b6}}. The matching scores between images to reconstruct and the ground truth images and between reconstructed images and ground truth images were computed. These scores are compared to a threshold to determine whether or not the pair belongs to the same person. finally, the CMC curve is graphed plotting the False Accept Rate(FAR) and False Reject Rate (FRR) obtained for different thresholds. Fig.~\ref{fig9} shows achieved results.
+The first test was carried out using the Receiver Operating Characteristic (ROC), a well-accepted measure to express performance of 1:1 matchers \cite{RROCCMC}. The matching scores between images to reconstruct and the ground truth images and between reconstructed images and ground truth images were computed. These scores are compared to a threshold to determine whether or not the pair belongs to the same person. finally, the CMC curve is graphed plotting the False Accept Rate(FAR) and False Reject Rate (FRR) obtained for different thresholds. Fig.~\ref{fig9} shows achieved results.
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[scale=0.3]{images/-.png}}
@@ -233,7 +230,7 @@ The first test was carried out using the Receiver Operating Characteristic (ROC)
 
 Analysis ROC curve.
 
-The Cumulative Match Curve (CMC) is used in the second test. Since it is a 1:m matcher evaluator the matching score must be computed on every possible tuple formed by a deteriorated image and a ground truth image and a enhanced image and a ground truth image. The curves are obtained following steps described in \hyperref[sec:ref6]{\cite{b6}}. Fig.~\ref{fig10} shows obtained graph.
+The Cumulative Match Curve (CMC) is used in the second test. Since it is a 1:m matcher evaluator the matching score must be computed on every possible tuple formed by a deteriorated image and a ground truth image and a enhanced image and a ground truth image. The curves are obtained following steps described in \cite{RROCCMC}. Fig.~\ref{fig10} shows obtained graph.
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[scale=0.3]{images/-.png}}
@@ -279,7 +276,6 @@ in frontmatter.
 
 % Loading bibliography database
 \bibliography{cas-refs}
-
 
 %\vskip3pt
 
