@@ -262,11 +262,229 @@ More complex deterioration algorithms can be studied in order to simulate real w
 
 \appendix
 \section{My Appendix}
-Appendix sections are coded under \verb+\appendix+.
 
-\verb+\printcredits+ command is used after appendix sections to list 
-author credit taxonomy contribution roles tagged using \verb+\credit+ 
-in frontmatter.
+\begin{table}[htbp]
+\caption{Architecture details of generator}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+{\color[HTML]{000000} \textbf{Layer}} &
+  {\color[HTML]{000000} \textbf{Strides}} &
+  {\color[HTML]{000000} \textbf{Padding}} &
+  {\color[HTML]{000000} \textbf{Filters}} &
+  {\color[HTML]{000000} \textbf{Input size}} &
+  {\color[HTML]{000000} \textbf{Output size}} &
+  {\color[HTML]{000000} \textbf{Batchnorm}} &
+  {\color[HTML]{000000} \textbf{Activation}} &
+  {\color[HTML]{000000} \textbf{Dropout}} \\ \hline
+{\color[HTML]{000000} Conv1} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 64} &
+  {\color[HTML]{000000} (256,256,1)} &
+  {\color[HTML]{000000} (128,128,64)} &
+  {\color[HTML]{000000} No} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv2} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 128} &
+  {\color[HTML]{000000} (128,128,64)} &
+  {\color[HTML]{000000} (64,64,128)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv3} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 256} &
+  {\color[HTML]{000000} (64,64,128)} &
+  {\color[HTML]{000000} (32,32,256)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv4} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (32,32,256)} &
+  {\color[HTML]{000000} (16,16,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv5} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (16,16,512)} &
+  {\color[HTML]{000000} (8,8,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv6} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (8,8,512)} &
+  {\color[HTML]{000000} (4,4,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv7} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (4,4,512)} &
+  {\color[HTML]{000000} (2,2,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv8} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (2,2,512)} &
+  {\color[HTML]{000000} (1,1,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} TransConv1} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (1,1,512)} &
+  {\color[HTML]{000000} (2,2,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} Relu} &
+  {\color[HTML]{000000} Yes} \\ \hline
+{\color[HTML]{000000} TransConv2} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (2,2,512)} &
+  {\color[HTML]{000000} (4,4,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} Relu} &
+  {\color[HTML]{000000} Yes} \\ \hline
+{\color[HTML]{000000} TransConv3} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (4,4,512)} &
+  {\color[HTML]{000000} (8,8,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} Relu} &
+  {\color[HTML]{000000} Yes} \\ \hline
+{\color[HTML]{000000} TransConv4} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (8,8,512)} &
+  {\color[HTML]{000000} (16,16,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} Relu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} TransConv5} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 256} &
+  {\color[HTML]{000000} (16,16,512)} &
+  {\color[HTML]{000000} (32,32,256)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} Relu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} TransConv6} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 128} &
+  {\color[HTML]{000000} (32,32,256)} &
+  {\color[HTML]{000000} (64,64,128)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} Relu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} TransConv7} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 64} &
+  {\color[HTML]{000000} (64,64,128)} &
+  {\color[HTML]{000000} (128,128,64)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} Relu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} TransConv8} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 1} &
+  {\color[HTML]{000000} (128,128,64)} &
+  {\color[HTML]{000000} (256,256,1)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} Tanh} &
+  {\color[HTML]{000000} No} \\ \hline
+\end{tabular}
+\label{tab1}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Architecture details of discriminator}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+{\color[HTML]{000000} \textbf{Layer}} &
+  {\color[HTML]{000000} \textbf{Strides}} &
+  {\color[HTML]{000000} \textbf{Padding}} &
+  {\color[HTML]{000000} \textbf{Filters}} &
+  {\color[HTML]{000000} \textbf{Input size}} &
+  {\color[HTML]{000000} \textbf{Output size}} &
+  {\color[HTML]{000000} \textbf{Batchnorm}} &
+  {\color[HTML]{000000} \textbf{Activation}} &
+  {\color[HTML]{000000} \textbf{Dropout}} \\ \hline
+{\color[HTML]{000000} Conv1} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 64} &
+  {\color[HTML]{000000} (256,256,1)} &
+  {\color[HTML]{000000} (128,128,64)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv2} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 128} &
+  {\color[HTML]{000000} (128,128,64)} &
+  {\color[HTML]{000000} (64,64,128)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv3} &
+  {\color[HTML]{000000} (4,4)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 256} &
+  {\color[HTML]{000000} (64,64,128)} &
+  {\color[HTML]{000000} (32,32,256)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Con4} &
+  {\color[HTML]{000000} (1,1)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 512} &
+  {\color[HTML]{000000} (32,32,256)} &
+  {\color[HTML]{000000} (32,32,512)} &
+  {\color[HTML]{000000} Yes} &
+  {\color[HTML]{000000} LeakyRelu} &
+  {\color[HTML]{000000} No} \\ \hline
+{\color[HTML]{000000} Conv5} &
+  {\color[HTML]{000000} (1,1)} &
+  {\color[HTML]{000000} same} &
+  {\color[HTML]{000000} 1} &
+  {\color[HTML]{000000} (32,32,512)} &
+  {\color[HTML]{000000} (29,29,1)} &
+  {\color[HTML]{000000} No} &
+  {\color[HTML]{000000} None} &
+  {\color[HTML]{000000} No} \\ \hline
+\end{tabular}
+\label{tab2}
+\end{table}
 
 \printcredits
 
