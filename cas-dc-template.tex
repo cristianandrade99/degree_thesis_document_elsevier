@@ -130,7 +130,7 @@ The paper follows the next organization: the source and preprocessing of trainin
 Training data came from two sources. The first one is a private dataset of 19.859 fingerprints recorded within an enrollment process of citizen procedures. The second corresponds to 39.611 real fingerprints from LivDet dataset, a dataset built for a competition that rewards the best spoof detection model. Fig.~\ref{fig1} shows some examples of the datasets. 
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{images/-.png}}
+\centerline{\includegraphics[scale=0.3]{figs/dataset_example.png}}
 \caption{Example of images from source datasets}
 \label{fig1}
 \end{figure}
@@ -138,7 +138,7 @@ Training data came from two sources. The first one is a private dataset of 19.85
 As data comes from different sources, the first step of preprocessing is to resize images into a resolution of 256x256. The next step is to build tuples, each one conformed by an image to enhance, and a target image. The image to enhance is obtained through an artificial deterioration process and the target image is the original image of the dataset. There are two types of deterioration. The first one consists in drawing noisy holes to simulate a skin disease, a burnt finger or other types of fingerprint modifications. It is achieved generating random white ellipses and summing a tiny gaussian noise as can be seen in Fig.~\ref{fig2}.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{images/-.png}}
+\centerline{\includegraphics[scale=0.3]{figs/deterioration_1.png}}
 \caption{Artificial fingerprint deterioration with holes}
 \label{fig2}
 \end{figure}
@@ -146,7 +146,7 @@ As data comes from different sources, the first step of preprocessing is to resi
 The second type of deterioration is oriented to simulate wet or dry fingers or noise or dirty scanning surfaces. This is achieved by summing a specific value to every pixel in the image until the mean of the image reaches 250. This removes some ridges and blurs the image. Finally, a gaussian noise is summed as it is showed in Fig.~\ref{fig3}.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.32]{images/-.png}}
+\centerline{\includegraphics[scale=0.32]{figs/deterioration_2.png}}
 \caption{Artificial fingerprint deterioration simulating finger or scanning modified conditions}
 \label{fig3}
 \end{figure}
@@ -161,7 +161,7 @@ Proposed architecture follows the guidelines of an image to image translation mo
 Generator consists in a encoder and a decoder that configure an U-Net structure \cite{UNBIS}. The encoder is made up of eight sequentially connected convolutional layers that reduce the input height and width by a factor of two using same padding and strides of two. All layers use leakyrelu activation and batch normalization except for the first one. Similarly, decoder is made up of eight transpose convolutional layers, sometimes mistakenly called deconvolutional layers. In contrast to encoder, decoder layers increment by a factor of two height and width of input volumes which results in a final image of 256x256 pixels. All layers use batch normalization and relu activation and the first three layers use drop regularization. Fig.~\ref{fig4} shows a sketch of the generator and Table~\ref{tab1} of appendix specifies architecture details including number of filters on each layer.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.37]{images/-.png}}
+\centerline{\includegraphics[scale=0.37]{figs/generator.png}}
 \caption{Generator architecture}
 \label{fig4}
 \end{figure}
@@ -169,7 +169,7 @@ Generator consists in a encoder and a decoder that configure an U-Net structure 
 Discriminator is similar to a encoder since it applies convolutions to extract features from the input. However, unlike standard GANs, discriminator maps the input fingerprint to a 29x29 logits square rather than to a scalar for deciding whether or not the image was correctly enhanced. Sigmoid function is applied to 29x29 output and then it is weighted to obtain the final value for the discriminator decision. This is called a PathGAN because each value of the 29x29 output, approximately corresponds to a 70x70 patch of the input image. Fig.~\ref{fig5} shows a sketch of the generator and Table~\ref{tab2} of appendix specifies architecture details including number of filters on each layer.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.4]{images/-.png}}
+\centerline{\includegraphics[scale=0.4]{figs/discriminator.png}}
 \caption{Discriminator architecture}
 \label{fig5}
 \end{figure}
@@ -199,31 +199,31 @@ Training is performed by TensorFlow framework using a Nvidia Tesla K40 graphic c
 Fig.~\ref{fig6} shows enhancement of three fingerprints using the proposed method and the first type of deterioration. The model was able to reconstruct the corrupted regions drawing the ridges that had been disappeared.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{images/-.png}}
-\caption{ROC curve comparison before and after reconstruction}
+\centerline{\includegraphics[scale=0.28]{figs/recons_1.png}}
+\caption{Reconstructed fingerprints}
 \label{fig6}
 \end{figure}
 
 The reconstruction of fingerprints altered with the second type of deterioration is shown in Fig.~\ref{fig7}. The most of the ridges were recovered and the noise was diminished improving clarity and quality of the fingerprint.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{images/-.png}}
-\caption{ROC curve comparison before and after reconstruction}
+\centerline{\includegraphics[scale=0.28]{figs/recons_2.png}}
+\caption{Reconstructed fingerprints}
 \label{fig7}
 \end{figure}
 
 In contrast to previous results, there were some fingerprint examples that could not be restored effectively as shown in Fig.~\ref{fig8}. In those cases the deterioration caused a high level of corruption in the fingerprints. Therefore, it was almost impossible to achieve a successful enhancement.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{images/-.png}}
-\caption{ROC curve comparison before and after reconstruction}
+\centerline{\includegraphics[scale=0.28]{figs/recons_failed.png}}
+\caption{Reconstructed fingerprints}
 \label{fig8}
 \end{figure}
 
 The first test was carried out using the Receiver Operating Characteristic (ROC), a well-accepted measure to express performance of 1:1 matchers \cite{RROCCMC}. The matching scores between images to reconstruct and the ground truth images and between reconstructed images and ground truth images were computed. These scores are compared to a threshold to determine whether or not the pair belongs to the same person. finally, the CMC curve is graphed plotting the False Accept Rate(FAR) and False Reject Rate (FRR) obtained for different thresholds. Fig.~\ref{fig9} shows achieved results.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{images/-.png}}
+\centerline{\includegraphics[scale=0.3]{figs/roc_comparison.png}}
 \caption{ROC curve comparison before and after reconstruction}
 \label{fig9}
 \end{figure}
@@ -233,7 +233,7 @@ Analysis ROC curve.
 The Cumulative Match Curve (CMC) is used in the second test. Since it is a 1:m matcher evaluator the matching score must be computed on every possible tuple formed by a deteriorated image and a ground truth image and a enhanced image and a ground truth image. The curves are obtained following steps described in \cite{RROCCMC}. Fig.~\ref{fig10} shows obtained graph.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{images/-.png}}
+\centerline{\includegraphics[scale=0.3]{figs/cmc_comparison.png}}
 \caption{CMC curve comparison before and after reconstruction}
 \label{fig10}
 \end{figure}
@@ -243,7 +243,7 @@ Analysis CMC curve.
 The final performance metric consists on measuring average fingerprint image quality of validation dataset before and after reconstruction. Results are shown in Fig.~\ref{fig11}
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{images/-.png}}
+\centerline{\includegraphics[scale=0.3]{figs/mean_qualities.jpg}}
 \caption{Quality mean curve comparison before and after reconstruction}
 \label{fig11}
 \end{figure}
@@ -259,6 +259,8 @@ The generative model demonstrated a good performance on its reconstruction task.
 \label{sec:FW}
 
 More complex deterioration algorithms can be studied in order to simulate real world scenarios which can result in a more accurate model. Additionally, in order to improve algorithm generalization and performance it can be developed a dataset containing real fingerprint corruptions and its corresponding ground truths.
+
+make a careful and detailed dataset construction with perfect binarization as ground truth
 
 \appendix
 \section{My Appendix}
@@ -510,7 +512,7 @@ Author biography. Author biography. Author biography.
 Author biography. Author biography. Author biography.
 \endbio
 
-\bio{figs/pic1}
+\bio{figs/foto_cristian.png}
 Author biography with author photo.
 Author biography. Author biography. Author biography.
 Author biography. Author biography. Author biography.
