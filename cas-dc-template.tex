@@ -38,7 +38,7 @@
 \let\WriteBookmarks\relax
 \def\floatpagepagefraction{1}
 \def\textpagefraction{.001}
-\shorttitle{Leveraging social media news}
+\shorttitle{Fingerprint reconstruction}
 \shortauthors{CV Radhakrishnan et~al.}
 
 \title [mode = title]{Fingerprint Reconstruction Using a Convolutional Generative Adversarial Model}                     
@@ -92,7 +92,7 @@ suffix=Jr,]
 \nonumnote{This note has no numbers. In this work we demonstrate $a_b$ the formation Y\_1 of a new type of polariton on the interface between a cuprous oxide slab and a polystyrene micro-sphere placed on the slab.}
 
 \begin{abstract}
-Biometric systems record fingerprints into digital platforms for allowing governments and organizations to have a structured and reliable way to identify people. In some cases, uncontrolled factors in both enrollment and verification processes make the biometric systems to obtain poor quality fingerprints records. thus, performance of automatic identification decreases and the work of dactyloscopists becomes harder. This paper describes the implementation of a convolutional generative adversarial model that performs fingerprint image reconstruction in order to obtain clear ridge patterns using TensorFlow. fingerprint enhancement boosts the correct extraction of fingerprint features called minutiae which are the center of matching and identification algorithms. A biometric open source framework called NBIS is used to measure the efectiveness of the model in terms of matching accuracy and image quality.
+Biometric systems record fingerprints into digital platforms for allowing governments and organizations to have a structured and reliable way to identify people. In some cases, uncontrolled factors in both enrollment and verification processes make the biometric systems to obtain poor quality fingerprints records. Thus, performance of automatic identification decreases and the work of dactyloscopists becomes harder. This paper describes the implementation of a convolutional generative adversarial model that performs fingerprint image reconstruction in order to obtain clear ridge patterns using TensorFlow. Fingerprint enhancement boosts the correct extraction of fingerprint features called minutiae which are the center of matching and identification algorithms. A biometric open source framework called NBIS is used to measure the efectiveness of the model in terms of matching accuracy and image quality.
 \end{abstract}
 
 \begin{graphicalabstract}
@@ -114,7 +114,7 @@ fingerprint \sep enhancement \sep generative \sep adversarial \sep convolutional
 
 \section{Introduction}
 
-The minutia based algorithms are the most widely used for fingerprint recognition. Minutiae are local ridge and valley characteristics of fingerprints such as endings and bifurcations \cite{HFPR}. Each minutia is determined by four values: pixel position in vertical axis, pixel position in horizontal axis, orientation and quality \cite{NBISUG}. The algorithm computes a score based on the minutia of two fingerprints and if the score is above a certain threshold the fingerprints are determined to belong to the same person.
+Minutia based algorithms are the most widely used for fingerprint recognition. Minutiae are local ridge and valley characteristics of fingerprints such as endings and bifurcations \cite{HFPR}. Each minutia is determined by four values: pixel position in vertical axis, pixel position in horizontal axis, orientation and quality \cite{NBISUG}. Verification and Identification algorithms compute a score based on the minutia of two fingerprints and if the score is above a certain threshold the fingerprints are determined to belong to the same person.
 
 There are cases where quality of recorded fingerprints is poor due to factors like cut, wet, dry or burnt fingers, skin diseases, dirty scanning surfaces, incorrect pressure while scanning, among others. These factors remove real minutia or create false ones affecting the matching process. Fingerprint reconstruction and enhancement allow the algorithms to distinguish correctly between ridges and valleys, so real minutia is detected and identification accuracy improves.
 
@@ -200,7 +200,7 @@ Fig.~\ref{fig6} shows enhancement of three fingerprints using the proposed metho
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[scale=0.28]{figs/recons_1.png}}
-\caption{Reconstructed fingerprints}
+\caption{Three successful examples. First column is the deteriorated image, the second column is the enhanced fingerprint and the third column is the ground truth}
 \label{fig6}
 \end{figure}
 
@@ -208,7 +208,7 @@ The reconstruction of fingerprints altered with the second type of deterioration
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[scale=0.28]{figs/recons_2.png}}
-\caption{Reconstructed fingerprints}
+\caption{Three successful examples. First column is the deteriorated image, the second column is the enhanced fingerprint and the third column is the ground truth}
 \label{fig7}
 \end{figure}
 
@@ -216,39 +216,38 @@ In contrast to previous results, there were some fingerprint examples that could
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[scale=0.28]{figs/recons_failed.png}}
-\caption{Reconstructed fingerprints}
+\caption{Two failed examples. First column is the deteriorated image, the second column is the enhanced fingerprint and the third column is the ground truth}
 \label{fig8}
 \end{figure}
 
-The first test was carried out using the Receiver Operating Characteristic (ROC), a well-accepted measure to express performance of 1:1 matchers \cite{RROCCMC}. The matching scores between images to reconstruct and the ground truth images and between reconstructed images and ground truth images were computed. These scores are compared to a threshold to determine whether or not the pair belongs to the same person. finally, the CMC curve is graphed plotting the False Accept Rate(FAR) and False Reject Rate (FRR) obtained for different thresholds. Fig.~\ref{fig9} shows achieved results.
+The first test was carried out using the Receiver Operating Characteristic (ROC), a well-accepted measure to express performance of 1:1 matchers \cite{RROCCMC}. The matching scores between images to reconstruct and the ground truth images and between reconstructed images and ground truth images were computed. These scores are compared to a threshold to determine whether or not the pair belongs to the same person. finally, the CMC curve is graphed plotting the True Positive Rate (TPR) and False Positive Rate (FPR) obtained for different thresholds. Fig.~\ref{fig9} shows achieved results.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{figs/roc_comparison.png}}
+\centerline{\includegraphics[scale=0.4]{figs/roc_comparison.png}}
 \caption{ROC curve comparison before and after reconstruction}
 \label{fig9}
 \end{figure}
 
-Analysis ROC curve.
+Since TPR stays at vertical axis and FPR at horizontal axis, the more upper left the points are in the graph, the better the model to identify people. After enhancement the red dotted curve became the green dotted curve which lies at the top left side. Additionally, the Area Under the Curve (AUC) augmented from 0.85 to 0.92 which means that the enhancer model improved the accuracy of the matching process.
 
 The Cumulative Match Curve (CMC) is used in the second test. Since it is a 1:m matcher evaluator the matching score must be computed on every possible tuple formed by a deteriorated image and a ground truth image and a enhanced image and a ground truth image. The curves are obtained following steps described in \cite{RROCCMC}. Fig.~\ref{fig10} shows obtained graph.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{figs/cmc_comparison.png}}
+\centerline{\includegraphics[scale=0.4]{figs/cmc_comparison.png}}
 \caption{CMC curve comparison before and after reconstruction}
 \label{fig10}
 \end{figure}
 
-Analysis CMC curve.
+CMC curve shows the cumulative probability of obtaining a correct match within the first $k$ highest matching scores. In contrast to deteriorated images curve, enhanced fingerprints curve presents a higher value at $k$ equal to one and a steeper slope at that point. This indicates a better 1:1 matcher to implement 1:m search through
+sorting \cite{RROCCMC}.
 
-The final performance metric consists on measuring average fingerprint image quality of validation dataset before and after reconstruction. Results are shown in Fig.~\ref{fig11}
+The final performance metric consists on measuring average fingerprint image quality of validation dataset before and after reconstruction. The nfiq measure scores a high quality fingerprint with a 1 and a low quality fingerprint with a 5. Fig.~\ref{fig11} shows that average quality of images improved after enhancement. The difference with respect to ground truth images decreased from 70\% to 18\%.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.3]{figs/mean_qualities.jpg}}
+\centerline{\includegraphics[scale=0.4]{figs/mean_qualities.jpg}}
 \caption{Quality mean curve comparison before and after reconstruction}
 \label{fig11}
 \end{figure}
-
-Analysis MEAN curve.
 
 \section{Conclusion}
 \label{sec:CON}
@@ -499,19 +498,6 @@ make a careful and detailed dataset construction with perfect binarization as gr
 
 %\vskip3pt
 
-\bio{}
-Author biography without author photo.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-\endbio
-
 \bio{figs/foto_cristian.png}
 Author biography with author photo.
 Author biography. Author biography. Author biography.
@@ -519,14 +505,6 @@ Author biography. Author biography. Author biography.
 Author biography. Author biography. Author biography.
 Author biography. Author biography. Author biography.
 Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-\endbio
-
-\bio{figs/pic1}
-Author biography with author photo.
 Author biography. Author biography. Author biography.
 Author biography. Author biography. Author biography.
 Author biography. Author biography. Author biography.
