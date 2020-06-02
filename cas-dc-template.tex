@@ -181,14 +181,14 @@ Let's recall that the main objective is make the generator to reconstruct and en
 
 The first cost function refers to the generator and it is made up of the sum of two terms. To obtain the first term, a deteriorated fingerprint of the dataset is passed through the generator. The reconstructed image is then compared to its ground truth using L1 norm. Second term is obtained concatenating reconstructed and deteriorated image, then passing the concatenation through the discriminator and finally calculating cross entropy with label equal to one meaning the intent of generator to fool the discriminator. Concatenation of deteriorated image gives to discriminator a context that helps to improve optimization process. Next equation summarizes what was previously described.
 \begin{equation}
-Gen_{loss} = \alpha||y-gen(x)||_{[1]} - log(disc(x,gen(x)))
+    Gen_{loss} = \alpha||y-gen(x)||_{[1]} - log(disc(x,gen(x)))
 \end{equation}
 
 Where $x$ corresponds to a deteriorated image, $gen(x)$ the reconstruction, $y$ the ground truth image, $disc(x,gen(x))$ the probability calculated passing the enhanced fingerprint through the discriminator and $\alpha$ defines the weight of reconstruction term.
 
 The second cost function corresponds to counterpart of generator, the discriminator. It is also made up of the sum of two terms: the first is obtained concatenating reconstructed and deteriorated image, then passing the result through the discriminator and finally computing cross entropy with label equal to zero meaning the intent of discriminator of not being fooled by the generator. The second term is calculated similarly, however, it is concatenated the ground truth fingerprint instead of the reconstructed one and label is equal to one indicating that ground truth image is a real and correct reconstructed fingerprint.
 \begin{equation}
-Disc_{loss} = -log(1-disc(x,gen(x)))-log(disc(x,y))
+    Disc_{loss} = -log(1-disc(x,gen(x)))-log(disc(x,y))
 \end{equation}
 
 Training process is configured as follows: tuples formed in the preprocessing step are grouped into batches of 48 elements. Adam optimizer is configured with $\beta_{1}=0.5$, $\beta_{2}=0.999$ and a learning rate of $0.00018$. In order to favour a correct reconstruction, $\alpha$ is set to 50. It was used a Nvidia Tesla K40 graphic card.
@@ -271,7 +271,7 @@ More complex deterioration algorithms can be studied in order to simulate real w
 %\vskip3pt
 
 \bio{figs/foto_cristian.png}
-\textbf{Cristian Yesid Andrade Hernández} courses ninth semester Electronic Engineering student at Universidad de los Andes. Interested in technology applications that involves machine learning, pattern recognition, robotics, control and artificial intelligence. Algorithms and programming skills cover Java, C\#, Python, JavaScript, C++, Visual Basic and Matlab. Two years of experience teaching programming as tutor in a engineering course at university. Internship at Colpatria Group Company: Olimpia IT working on automatic testing of the software.
+\textbf{Cristian Yesid Andrade Hernández} courses ninth semester of Electronic Engineering at Universidad de los Andes. Interested in technology applications that involves machine learning, pattern recognition, robotics, control and artificial intelligence. Algorithms and programming skills cover Java, C\#, Python, JavaScript, C++, Visual Basic and Matlab. Two years of experience teaching programming as tutor in a engineering course at university. Internship at Colpatria Group Company: Olimpia IT working on automatic testing of the software.
 \endbio
 
 \onecolumn
