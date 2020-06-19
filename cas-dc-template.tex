@@ -75,9 +75,10 @@ Two main frameworks were used to develop the project: Tensorflow open source pla
 
 The paper follows the next organization: source and preprocessing of training data is described in section \hyperref[sec:DP]{2}. Section \hyperref[sec:MA]{3} presents model architecture details. Training configuration is explained in section \hyperref[sec:MT]{4}. Section \hyperref[sec:R]{5} presents and analyses results. Finally, conclusion and future work are in sections \hyperref[sec:FW]{6} and \hyperref[sec:FW]{7} respectively.
      
-\section{Data preprocessing}
+\section{Proposed Methodology}
 \label{sec:DP}
 
+\subsection{Data Preprocessing}
 Training data came from two sources: the first one is a private dataset of 19.859 fingerprints recorded during the enrollment process of citizen procedures. The second corresponds to 39.611 real fingerprints from LivDet dataset, a dataset built for a competition that rewards the best spoof detection model. Fig.~\ref{fig1} shows some examples of the datasets.
 
 \begin{figure}[htbp]
@@ -104,7 +105,7 @@ The second type of deterioration is oriented to simulate wet or dry fingers or n
 
 Once the data is loaded and preprocessed, tuples are feeded into the model for making it to learn the optimum transformation that results in restored fingerprint images.
 
-\section{Model Architecture}
+\subsection{Model Architecture}
 \label{sec:MA}
 
 Proposed architecture is composed by a generator that receives the image to enhance as input and returns the reconstructed image as output and a discriminator that determines whether or not an image was successfully reconstructed. Both convolutional structures will be detailed next.
@@ -125,10 +126,10 @@ Discriminator is similar to a encoder since it applies convolutions to extract f
 \label{fig5}
 \end{figure}
 
-\section{Model training}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Model Training}
 \label{sec:MT}
-
-Let's recall that the main objective is make the generator to reconstruct and enhance deteriorate fingerprints the best way as possible. To achieve that, the model is trained through a optimization process that uses back propagation to calculate gradients and adam optimizer to update parameters. Since it is an adversarial architecture, there are two cost functions to minimize that will be described next.
+Recall that the main objective is to make the generator reconstruct and enhance deteriorated fingerprints the best way as possible. To achieve that, the model is trained through a optimization process that uses back propagation to calculate gradients and adam optimizer to update parameters. Since it is an adversarial architecture, there are two cost functions to minimize that will be described next.
 
 The first cost function refers to the generator and it is made up of the sum of two terms. To obtain the first term, a deteriorated fingerprint of the dataset is passed through the generator. The reconstructed image is then compared to its ground truth using L1 norm. Second term is obtained concatenating reconstructed and deteriorated image, then passing the concatenation through the discriminator and finally calculating cross entropy with label equal to one meaning the intent of generator to fool the discriminator. Concatenation of deteriorated image gives to discriminator a context that helps to improve optimization process. Next equation summarizes what was previously described.
 \begin{equation}
@@ -144,7 +145,8 @@ The second cost function corresponds to counterpart of generator, the discrimina
 
 Training process is configured as follows: tuples formed in the preprocessing step are grouped into batches of 48 elements. Adam optimizer is configured with $\beta_{1}=0.5$, $\beta_{2}=0.999$ and a learning rate of $0.00018$. In order to favour a correct reconstruction, $\alpha$ is set to 50. It was used a Nvidia Tesla K40 graphic card.
 
-\section{Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experimental Results}
 \label{sec:R}
 
 Fig.~\ref{fig6} shows three enhanced fingerprints using the proposed method and the first type of deterioration. It can be seen that the model was able to reconstruct the corrupted regions drawing the ridges that had been disappeared.
@@ -174,7 +176,7 @@ In contrast to showed results, there were some fingerprint examples that could n
 The first test to measure model performance was carried out using the Receiver Operating Characteristic (ROC), a well-accepted measure to express performance of 1:1 matchers \cite{RROCCMC}. Matching scores were computed between images to reconstruct and the ground truth images and between reconstructed images and ground truth images. These scores are compared to a threshold to determine whether or not the pair belongs to the same person. Finally, CMC curve is obtained plotting the True Positive Rate (TPR) and False Positive Rate (FPR) for different thresholds as can be seen in Fig.~\ref{fig9}.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.45]{figs/roc_comparison.png}}
+\centerline{\includegraphics[scale=0.5]{figs/roc_comparison.png}}
 \caption{ROC curve comparison before and after reconstruction}
 \label{fig9}
 \end{figure}
@@ -184,18 +186,51 @@ Since TPR stays at vertical axis and FPR at horizontal axis, the more upper left
 The Cumulative Match Curve (CMC) is used in the second prove. Since it is a 1:m matching algorithm tester, the matching score must be computed on every possible tuple formed by a deteriorated image and a ground truth image and a enhanced image and a ground truth image. The curves are obtained following steps described in \cite{RROCCMC} and results are showed in Fig.~\ref{fig10}.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.45]{figs/cmc_comparison.png}}
+\centerline{\includegraphics[scale=0.5]{figs/cmc_comparison.png}}
 \caption{CMC curve comparison before and after reconstruction}
 \label{fig10}
 \end{figure}
 
 CMC curve shows the cumulative probability of obtaining a correct match based on computed scores within the first $k$ highest matching scores. In contrast to deteriorated images curve, enhanced fingerprints curve presents a higher value at $k$ equal to one and a steeper slope at that point. This indicates a better performance while implementing a 1:m fingerprint identification algorithm through sorting \cite{RROCCMC}.
 
-The final performance metric consists on measuring average fingerprint image quality of the validation dataset before and after reconstruction. The nfiq measure scores a high quality fingerprint with a value of 1 and a low quality fingerprint with a value of 5. Fig.~\ref{fig11} shows that average quality of images improved after enhancement. The difference of fingerprint quality with respect to ground truth images decreased from 70\% to 18\%.
+The final performance metric consists on measuring average fingerprint image quality of the validation dataset before and after reconstruction. Since nfiq measure scores a high quality fingerprint with a value of 1 and a low quality fingerprint with a value of 5, Fig.~\ref{fig11} can be interpreted as a deterioration level graph. The difference of fingerprint quality with respect to ground truth images decreased from 70\% to 18\%.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.4]{figs/mean_qualities.png}}
-\caption{Quality mean curve comparison before and after reconstruction}
+\centerline{\includegraphics[scale=0.13]{figs/mean_qualities.png}}
+\caption{Deterioration level comparison before and after reconstruction}
+\label{fig11}
+\end{figure}
+
+\section{Computational load testing}
+\label{sec:COMLOAD}
+
+In order to measure computational feasibility of the model, 300 fingerprints were reconstructed using two different computational engines. First, it was used a Raspberry PI, a practical device where light and portable solutions can be implemented. During enhancement process, RAM memory consumed by the device was in average 593 MB and mean reconstruction time per fingerprint was 1.4 seconds.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[scale=0.22]{figs/RAM RB.png}}
+\caption{RAM memory in Raspberry PI}
+\label{fig11}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[scale=0.22]{figs/Time RB.png}}
+\caption{Average time in Raspberry PI}
+\label{fig11}
+\end{figure}
+
+The second engine corresponds to a desktop computer which simulates a server running a fingerprint reconstruction API. RAM memory result is similar to obtained in Raspberry PI experiment since calculated value is equal to 612 MB. In this case, average reconstruction time per fingerprint was 0.2 seconds.
+
+Those results show that the model can be implemented in both a lightweight device and a standard web server which means that several options are available to deploy a enterprise solution. In addition, reconstruction time per fingerprint is low enough to build real time image processing solutions.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[scale=0.22]{figs/RAM Server.png}}
+\caption{RAM memory in server}
+\label{fig11}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[scale=0.22]{figs/Time Server.png}}
+\caption{Average time in server}
 \label{fig11}
 \end{figure}
 
@@ -221,9 +256,9 @@ More complex deterioration algorithms can be studied in order to simulate real w
 
 %\vskip3pt
 
-\bio{figs/foto_cristian.png}
-\textbf{Cristian Yesid Andrade Hernández} courses ninth semester of Electronic Engineering at Universidad de los Andes. Interested in technology applications that involves machine learning, pattern recognition, robotics, control and artificial intelligence. Algorithms and programming skills cover Java, C\#, Python, JavaScript, C++, Visual Basic and Matlab. Two years of experience teaching programming as tutor in a engineering course at university. Internship at Colpatria Group Company: Olimpia IT working on automatic testing of the software.
-\endbio
+% \bio{figs/foto_cristian.png}
+% \textbf{Cristian Yesid Andrade Hernández} courses ninth semester of Electronic Engineering at Universidad de los Andes. Interested in technology applications that involves machine learning, pattern recognition, robotics, control and artificial intelligence. Algorithms and programming skills cover Java, C\#, Python, JavaScript, C++, Visual Basic and Matlab. Two years of experience teaching programming as tutor in a engineering course at university. Internship at Colpatria Group Company: Olimpia IT working on automatic testing of the software.
+% \endbio
 
 \onecolumn
 \appendix
