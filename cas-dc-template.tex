@@ -39,117 +39,135 @@
 \def\floatpagepagefraction{1}
 \def\textpagefraction{.001}
 \shorttitle{Fingerprint reconstruction}
-\shortauthors{Cristian Yesid Andrade Hernández et~al.}
+\shortauthors{Cristian Yesid Andrade et~al.}
 
-\title [mode = title]{Fingerprint Reconstruction Using a Convolutional Generative Adversarial Model}                     
+\title [mode = title]{Fingerprint Reconstruction Using a Compact Convolutional Generative Adversarial Model}  
 
-% AUTHOR 1
-\author{Cristian Yesid Andrade Hernández}
-\ead{cy.andrade@uniandes.edu.co}
-\credit{Conceptualization of this study, Methodology, Software}
 
-% AUTHOR 2
-\author{Luis Felipe Giraldo Trujillo}
-\ead{lf.giraldo404@uniandes.edu.co}
-\credit{Thesis advisor}
+\cortext[1]{Corresponding author: Cristian Yesid Andrade, email: cy.andrade@uniandes.edu.co}
+\author[1]{Cristian Yesid Andrade}\cormark[1]
+
+\address[1]{Olimpia IT, Bogotá, Colombia}
+\address[2]{Deptartment of Electric and Electronic Engineering, Universidad de los Andes, Cra 1 Nº 18A - 12, Bogotá, Colombia}
+
+
+\author[2]{Luis Felipe Giraldo}
+\author[1]{Daniel Medina}
+
+
+% % AUTHOR 1
+% \author{}
+% \ead{cy.andrade@uniandes.edu.co}
+% %\credit{Conceptualization of this study, Methodology, Software}
+
+% % AUTHOR 2
+% \author{Luis Felipe Giraldo}
+% \ead{lf.giraldo404@uniandes.edu.co}
+% %\credit{Thesis advisor}
+
+% % AUTHOR 3
+% \author{Daniel Medina}
+% \ead{Daniel.Medina@olimpiait.com}
+
 
 \begin{abstract}
-Biometric systems record fingerprints into digital platforms for allowing governments and organizations to have a structured and reliable way to identify people. In some cases, uncontrolled factors in both enrollment and verification processes make the biometric systems to obtain poor quality fingerprints records. Thus, performance of automatic identification decreases and the work of dactyloscopists becomes harder. This paper describes the implementation of a convolutional generative adversarial model that performs fingerprint image reconstruction in order to obtain clear ridge patterns using TensorFlow. Fingerprint enhancement boosts the correct extraction of fingerprint features called minutiae which are the center of matching and identification algorithms. A biometric open source framework called NBIS is used to measure the efectiveness of the model in terms of matching accuracy and image quality.
+%Biometric systems record fingerprints into digital platforms allowing governments and organizations to have a structured and reliable way to identify people. In some cases, uncontrolled factors in both enrollment and verification processes make the biometric systems to obtain poor quality fingerprints records. Thus, performance of automatic identification decreases and the work of dactyloscopists becomes harder. This paper describes the implementation of a convolutional generative adversarial model that performs fingerprint image reconstruction in order to obtain clear ridge patterns using TensorFlow. Fingerprint enhancement boosts the correct extraction of fingerprint features called minutiae which are the center of matching and identification algorithms. A biometric open source framework called NBIS is used to measure the efectiveness of the model in terms of matching accuracy and image quality.
+Biometric systems that record and analyze fingerprints require high quality records to provide a reliable automatic identification. Poor quality records affect performance of the identification process. In this paper we describe the implementation of a convolutional generative adversarial model for fingerprint image reconstruction to obtain clear ridge patterns. We focus on situations where the fingerprint collection is conducted in controlled scenarios that are affected by factors such as acquisition device malfunctioning or skin deterioration. We evaluate the proposed model according to two criteria: i) matching accuracy and image quality using metrics proposed by the National Institute of Standards and Technology; and ii) computational load in real implementations when deployed on a portable processors such as Raspberry Pi and a server. We show the effectiveness of the model in terms of quality and practical implementation. 
+%A biometric open source framework called NBIS is used to measure the efectiveness of the model in terms of matching accuracy and image quality.
 \end{abstract}
 
 \begin{keywords}
-fingerprint \sep enhancement \sep generative \sep adversarial \sep convolutional \sep neural \sep network
+Fingerprint enhancement \sep generative adversarial  network \sep Deep Learning \sep Raspberry Pi
 \end{keywords}
 
 \maketitle
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+%Each minutia is determined by four values: pixel position in vertical axis, pixel position in horizontal axis, orientation and quality \cite{NBISUG}.
+Fingerprint images are probably the most used  biometric marker for identity recognition \cite{HFPR}. Typically, algorithms for identity recognition analyze patterns in local ridge and valley characteristics of fingerprint images such as endings and bifurcations, known as minutia \cite{HFPR}. These algorithms compute a score based on comparing minutia of two fingerprint images, where two fingerprints are considered to belong to the same person if the score is above a given threshold. There are cases where quality of recorded fingerprints is poor, even in controlled situations, due to factors that include cuts, burnt skin, dryness, dermatitis, dirty scanning surfaces, and malfunction in acquisition devices \cite{HFPR,FIESDD,CCGAN,AIFEGF,OFFIE}. These factors either remove real minutia or create false ones, affecting the identification process. Hence, methods to reconstruct patterns in ridges and valleys in fingerprints are needed to improve the identification accuracy. During the last three decades, different methods for fingerprint enhancement and reconstruction have been proposed. Most of the restoration methods are based on local contextual analysis of the fingerprint, considering local ride orientation and local ridge frequency to estimate the correct pattern. Some of these methods analyze spatial  and frequency information to define a set of filters that conduct the reconstruction \cite{chikkerur2005fingerprint,fronthaler2007pyramid,turroni2012fingerprint,SIFE}. Other work add prior information on the patterns that are found in fingerprints to the reconstruction system to improve accuracy \cite{feng2010fingerprint,cao2014learning}   Most recent methods have focused on the use of deep convolutional neural networks to enhance fingerprints in a generative adversarial paradigm \cite{ITITAN,CCGAN,dabouei2018id,svoboda2017generative}. The resultant models are deep networks with a large amount of layers that are able to learn more sophisticated filters, allowing for the identification and analysis of fingerprint patterns. It has been shown that this scheme provides improved reconstruction results, providing that there are a large amount of fingerprint samples and computational resources for training. 
+% %Diferencias:
+% - Enfoque de otros que trabajan con GANs en latent fingerprints
+% - Mas compacto para implementacions portables
+% - Utilizacion de U-net: aprovechan informacion de alto nivel y bajo nivel en modelo de reconstruccion, dan contexto a la reconstruccion, ayuda la red a ser mas compacta. 
 
-Minutia based algorithms are the most widely used for fingerprint recognition. Minutiae are local ridge and valley characteristics of fingerprints such as endings and bifurcations \cite{HFPR}. Each minutia is determined by four values: pixel position in vertical axis, pixel position in horizontal axis, orientation and quality \cite{NBISUG}. Verification and identification algorithms compute a score based on the minutia of two fingerprints and if the score is above a certain threshold the fingerprints are determined to belong to the same person.
 
-There are cases where quality of recorded fingerprints is poor due to factors like cut, wet, dry or burnt fingers, skin diseases, dirty scanning surfaces, incorrect pressure while scanning, among others. These factors remove real minutia or create false ones affecting the identification process. Fingerprint reconstruction allow matching algorithms to distinguish correctly between ridges and valleys, so real minutia is detected and identification accuracy improves.
 
-Fingerprint enhancement can be treated as an image to image translation problem, so the solution proposed implements a generative adversarial convolutional neural network \cite{ITITAN}. It consists of a set of interconnected layers that receives an image as input, processes it with convolutions and returns the expected image as output. Parameters of the layer's filters are modified through an optimization process that minimize a cost function using a similarity measure and the adversarial training paradigm. 
+Even though a great deal of research has been conducted to analyze fingerprint images, fingerprint reconstruction in biometric systems is still an open problem. In this paper, we focus on the scenario where the fingerprint image is collected using acquisition devices in controlled situations such as a bank, police check, military operations, and biometric entrance guard control. The main challenge in this scenario for fingerprint image reconstruction lies in the development of a model that is accurate, portable, and provides low reconstruction times. Most of the recent work that has studied deep neural networks for fingerprint enchancement and reconstruction has focused on reconstructing latent fingerprints and has developed very accurate models at the expense of having a large amount of layers that increase computational processing times. Our contribution in this document is to propose a model based on deep convolutional neural networks that is able i) to accurately reconstruct fingerprints in controlled scenarios, and ii) to provide fast processing times in portable devices for local reconstruction. We treat fingerprint enhancement as an image-to-image translation problem in a generative adversarial network framework \cite{ITITAN,goodfellow2016deep}, which we hypothesize can provide a compact reconstruction model through the analysis of high and low level information of the fingerprints (Section \ref{sec:PM}). To train and test our model, we used a database with 100.000 anonymous fingerprint images that were artificially modified to simulate two different types of deterioration that are commonly seen in controlled scenarios (Section \ref{sec:ER}). We used a metric proposed by the National Institute of Standards and Technology to measure the quality of the deteriorated, enhanced, and original images. Also, we deployed the model to a Raspberry Pi and evaluated the computational load required by our model to provide a local reconstruction of fingerprints (Section \ref{sec:CLT}). We ended this paper with a conclusion and future research directions (Section \ref{sec:FW}). 
 
-Two main frameworks were used to develop the project: Tensorflow open source platform for building and training the model and NIST Biometric Image Software (NBIS) an open source biometric framework with core capabilities on fingerprint image processing developed by the National Institute of Standards and Technology (NIST) for the Federal Bureau of Investigation (FBI) and Department of Homeland Security (DHS) \cite{NBISWP}. Three NBIS modules were used in the project: \textit{mindtct} to extract minutiae in format \textit{xyt} from a fingerprint, \textit{bozorth3} to compute a similarity score between either a pair or a list of pairs of minutiae using the bozorth algorithm and \textit{nfiq} to return a quality measure of digital fingerprints.
 
-The paper follows the next organization: source and preprocessing of training data are described in section \hyperref[sec:DP]{2.1}. Section \hyperref[sec:MA]{2.2} presents model architecture details. Training configuration is explained in section \hyperref[sec:MT]{2.3}. Section \hyperref[sec:R]{3} presents and analyses results. Then, section \hyperref[sec:CLT]{4} describes a compute load test. Finally, conclusion and future work are in sections \hyperref[sec:FW]{5} and \hyperref[sec:FW]{6} respectively.
+%It consists of a set of interconnected layers that receive an image as input, processes it with convolutions and returns the expected image as output. Parameters of the layer's filters are modified through an optimization process that minimize a cost function using a similarity measure and the adversarial training paradigm.
+%The paper follows the next organization: source and preprocessing of training data are described in section \hyperref[sec:DP]{2.1}. Section \hyperref[sec:MA]{2.2} presents model architecture details. Training configuration is explained in section \hyperref[sec:MT]{2.3}. Section \hyperref[sec:R]{3} presents and analyses results. Then, section \hyperref[sec:CLT]{4} describes a compute load test. Finally, conclusion and future work are in sections \hyperref[sec:FW]{5} and \hyperref[sec:FW]{6} respectively.
      
+     
+     
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
 \section{Proposed Methodology}
 \label{sec:PM}
 
-\subsection{Data Preprocessing}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Data Collection and Preprocessing}
 \label{sec:DP}
-
-Training data came from a private dataset of 100.000 fingerprints recorded during the enrollment process of citizen procedures that are supported by a Colombia technology company. Fig.~\ref{fig1} shows some examples of the datasets.
-
-\begin{figure}[htbp]
+We used a dataset with 100.000 fingerprints that were recorded during \textcolor{green}{the medical exams that are needed to obtain a Colombian driver license. Each sample was recorder with the optical device Morpho smart MSO 1300 V3.} \textcolor{red}{Que es 'enrollment process for citizen procedures'? Eso no se entiende. Explicar bien los escenarios donde fueron recolectadas esta huellas.} Figure \ref{fig1} shows some examples of the fingerprint images in the dataset.
+\begin{figure}[ht]
 \centerline{\includegraphics[scale=0.3]{figs/dataset_example.png}}
 \caption{Example of images from source datasets}
 \label{fig1}
 \end{figure}
 
-As data comes from different sources, the first step of preprocessing is to resize images into a resolution of 256x256. The next step is to build tuples, each one conformed by an image to enhance, and a target image. The image to enhance is obtained through an artificial deterioration process and the target image is the original image of the dataset. There are two types of deterioration. The first one consists in drawing noisy holes to simulate a skin disease, a burnt finger or other types of fingerprint modifications. It is achieved generating random white ellipses on images and summing a tiny gaussian noise as can be seen in Fig.~\ref{fig2}.
-
+\textcolor{green}{Since image resolution of dataset is 400x400 pixels} \textcolor{red}{Cuales fuentes?}, the first step of preprocessing is to resize images into a resolution of 256x256 pixels. The next step is to build tuples of images: each one with an image to enhance and a target image. The image to enhance is obtained through an artificial deterioration process and the target image is the original image of the dataset. There are two types of deterioration that are commonly seen in controlled fingerprint acquisition scenarios. The first one consists in drawing noisy holes to simulate a skin disease, a burnt finger or other types of fingerprint modifications. It is achieved generating random white ellipses on images and adding a Gaussian noise as can be seen in Figure \ref{fig2}.
 \begin{figure}[htbp]
 \centerline{\includegraphics[scale=0.3]{figs/deterioration_1.png}}
 \caption{Artificial fingerprint deterioration with holes}
 \label{fig2}
 \end{figure}
-
 The second type of deterioration is oriented to simulate wet or dry fingers or noise or dirty scanning surfaces. This is achieved by summing a specific value to every pixel in the image until the mean of the image reaches 250. This removes some ridges and blurs the image. Finally, a gaussian noise is summed as it is showed in Fig.~\ref{fig3}.
-
-\begin{figure}[htbp]
+\begin{figure}[ht]
 \centerline{\includegraphics[scale=0.32]{figs/deterioration_2.png}}
 \caption{Artificial fingerprint deterioration simulating finger or scanning modified conditions}
 \label{fig3}
 \end{figure}
-
 Once the data is loaded and preprocessed, tuples are feeded into the model for making it to learn the optimum transformation that results in restored fingerprint images.
 
-\subsection{Model Architecture}
-\label{sec:MA}
-
-Proposed architecture is composed by a generator that receives the image to enhance as input and returns the reconstructed image as output and a discriminator that determines whether or not an image was successfully reconstructed. Both convolutional structures will be detailed next.
-
-Generator consists in a encoder and a decoder that configure an U-Net structure \cite{UNBIS}. The encoder is made up of eight sequentially connected convolutional layers, each one reducing the input height and width by a factor of two using same padding and strides of two. All layers use leakyrelu activation and batch normalization except for the first one. Similarly, decoder is made up of eight transpose convolutional layers, sometimes mistakenly called deconvolutional layers. In contrast to encoder, decoder layers increment by a factor of two height and width of input volumes which results in a final image of 256x256 pixels. All layers use batch normalization and relu activation and the first three layers use drop regularization. Fig.~\ref{fig4} shows a sketch of the generator and Table~\ref{tab1} of appendix specifies architecture details including number of filters on each layer.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Model Architecture}\label{sec:MA}
+Proposed architecture is composed by a generator that receives the image to enhance as input and returns the reconstructed image as output and a discriminator that determines whether or not an image was successfully reconstructed. Both convolutional structures will be detailed next. Generator consists in a encoder and a decoder that configure an U-Net structure \cite{UNBIS}. The encoder is made up of eight sequentially connected convolutional layers, each one reducing the input height and width by a factor of two using same padding and strides of two. All layers use leakyrelu activation and batch normalization except for the first one. Similarly, decoder is made up of eight transpose convolutional layers, sometimes mistakenly called deconvolutional layers. In contrast to encoder, decoder layers increment by a factor of two height and width of input volumes which results in a final image of 256x256 pixels. All layers use batch normalization and relu activation and the first three layers use drop regularization. Fig.~\ref{fig4} shows a sketch of the generator and Table~\ref{tab1} of appendix specifies architecture details including number of filters on each layer.
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.37]{figs/generator.png}}
+\centerline{\includegraphics[scale=0.36]{figs/generador_p.png}}
 \caption{Generator architecture}
 \label{fig4}
 \end{figure}
-
 Discriminator is similar to a encoder since it applies convolutions to extract features from the input. However, unlike standard GANs, discriminator maps the input fingerprint to a 29x29 logits square rather than a scalar for deciding whether or not the image was correctly enhanced. Sigmoid function is applied to 29x29 output and then it is weighted to obtain the final value for the discriminator decision. This is called a PathGAN because each value of the 29x29 output, approximately corresponds to a 70x70 patch of the input image. Fig.~\ref{fig5} shows a sketch of the discriminator and Table~\ref{tab2} of appendix specifies architecture details including number of filters on each layer.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.4]{figs/discriminator.png}}
+\centerline{\includegraphics[scale=0.36]{figs/discriminador_p.png}}
 \caption{Discriminator architecture}
 \label{fig5}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Model Training}
 \label{sec:MT}
 The main objective is to make the generator reconstruct and enhance deteriorated fingerprints the best way as possible. To achieve that, the model is trained through a optimization process that uses back propagation to calculate gradients and adam optimizer to update parameters. Since it is an adversarial architecture, there are two cost functions to minimize that will be described next.
 
 The first cost function refers to the generator and it is made up of the sum of two terms. To obtain the first term, a deteriorated fingerprint of the dataset is passed through the generator. The reconstructed image is then compared to its ground truth using L1 norm. Second term is obtained concatenating reconstructed and deteriorated image, then passing the concatenation through the discriminator and finally calculating cross entropy with label equal to one meaning the intent of generator to fool the discriminator. Concatenation of deteriorated image gives to discriminator a context that helps to improve optimization process. Next equation summarizes what was previously described.
 \begin{equation}
-    Gen_{loss} = \alpha||y-gen(x)||_{[1]} - log(disc(x,gen(x)))
+    Gen_{loss} = \alpha||y-gen(x)||_{[1]} - log(disc(x,gen(x))),
 \end{equation}
-
 Where $x$ corresponds to a deteriorated image, $gen(x)$ the reconstruction, $y$ the ground truth image, $disc(x,gen(x))$ the probability calculated passing the enhanced fingerprint through the discriminator and $\alpha$ defines the weight of reconstruction term.
 
 The second cost function corresponds to counterpart of generator, the discriminator. It is also made up of the sum of two terms: the first is obtained concatenating reconstructed and deteriorated image, then passing the result through the discriminator and finally computing cross entropy with label equal to zero meaning the intent of discriminator of not being fooled by the generator. The second term is calculated similarly, however, it is concatenated the ground truth fingerprint instead of the reconstructed one and label is equal to one indicating that ground truth image is a real and correct reconstructed fingerprint.
 \begin{equation}
-    Disc_{loss} = -log(1-disc(x,gen(x)))-log(disc(x,y))
+    Disc_{loss} = -log(1-disc(x,gen(x)))-log(disc(x,y)).
 \end{equation}
-
 Training process is configured as follows: tuples formed in the preprocessing step are grouped into batches of 48 elements. Adam optimizer is configured with $\beta_{1}=0.5$, $\beta_{2}=0.999$ and a learning rate of $0.00018$. In order to favour a correct reconstruction, $\alpha$ is set to 40. Python programming language  and Tensorflow framework were used to develop the model and to take advantage of the Nvidia Tesla K40 graphic card.
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Experimental Results}
-\label{sec:ER}
+\section{Experimental Results}\label{sec:ER}
+Two main frameworks were used to develop the project: Tensorflow open source platform for building and training the model and NIST Biometric Image Software (NBIS) an open source biometric framework with core capabilities on fingerprint image processing developed by the National Institute of Standards and Technology (NIST) for the Federal Bureau of Investigation (FBI) and Department of Homeland Security (DHS) \cite{NBISWP}. Three NBIS modules were used in the project: \textit{mindtct} to extract minutiae in format \textit{xyt} from a fingerprint, \textit{bozorth3} to compute a similarity score between either a pair or a list of pairs of minutiae using the bozorth algorithm and \textit{nfiq} to return a quality measure of digital fingerprints.
+
+
 
 Fig.~\ref{fig6} shows three enhanced fingerprints using the proposed method and the first type of deterioration. It can be seen that the model was able to reconstruct the corrupted regions drawing the ridges that had been disappeared.
 
@@ -203,6 +221,7 @@ The final performance metric consists on measuring average fingerprint image qua
 \label{fig11}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Computational load testing}
 \label{sec:CLT}
 
@@ -236,6 +255,7 @@ Those results show that the model can be implemented in both a lightweight devic
 \label{fig11}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 \label{sec:CON}
 
@@ -487,5 +507,17 @@ More complex deterioration algorithms can be studied in order to simulate real w
 \end{tabular}
 \label{tab2}
 \end{table}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[scale=0.4]{figs/training_fd_en_h.png}}
+\caption{Training flow}
+\label{figa1}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[scale=0.4]{figs/training_fd_en_v.png}}
+\caption{Training flow}
+\label{figa2}
+\end{figure}
 
 \end{document}
