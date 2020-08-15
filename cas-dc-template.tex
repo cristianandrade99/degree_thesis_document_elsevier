@@ -212,8 +212,8 @@ Since TPR stays at vertical axis and FPR at horizontal axis, a curve that is ske
 
 The final performance metric quantifies the average fingerprint image quality of the validation dataset before and after reconstruction. \textcolor{green}{NFIQ fingerprint image quality is defined as a predictor of a matcher’s performance \cite{Tabassi2009}.} \textcolor{red}{Aqui en este contexto que significa quality???}. We used the nfiq module of the NBIS to do this. This module assigns a value of 1 to a fingerprint with the highest quality, and a value of 5 to the lowest quality fingerprint. That is, lower values of this measure indicate higher quality fingerprints.  Fig.~\ref{fig11} shows the results. Here, note that after enhancement, fingerprints deterioration level decreased from an average score of 3.9 to 2.72, that is, approximately a reduction of 43\%.
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.13]{figs/mean_qualities.png}}
-\caption{Deterioration level comparison before and after reconstruction. \textcolor{red}{Quitar la palabra qualities del eje horizontal. Ya tiene un legend que es informativo.}}
+\centerline{\includegraphics[scale=0.54]{figs/mean_qualities.png}}
+\caption{Deterioration level comparison before and after reconstruction. \textcolor{red}{Quitar la palabra qualities del eje horizontal. Ya tiene un legend que es informativo.} \textcolor{green}{Listo}}
 \label{fig11}
 \end{figure}
 
@@ -263,7 +263,7 @@ To measure computational feasibility for implementation of the model, 300 finger
 \section{Conclusion}
 \label{sec:CON}
 \label{sec:FW}
-We implemented a \textcolor{red}{...Resumir aqui lo que se hizo, en tiempo pasado.}. We conducted different tests to evaluate the performance of the proposed model such as ROC and CMC curves, showing an improvement of the quality of the image and matching accuracy after the enhancement process. We also conducted a computational load test to show that the model can be implemented on engines for real-time applications. 
+We implemented a \textcolor{green}{generative convolutional neural network that was able to reconstruct deteriorated fingerprints successfully. The model was trained using the adversarial paradigm in which a generator and a discriminator competes to make the model learn the enhancement transformation.} \textcolor{red}{...Resumir aqui lo que se hizo, en tiempo pasado.}. We conducted different tests to evaluate the performance of the proposed model such as ROC and CMC curves, showing an improvement of the quality of the image and matching accuracy after the enhancement process. We also conducted a computational load test to show that the model can be implemented on engines for real-time applications. 
 
 
 A future research directions, more complex deterioration algorithms can be studied to simulate real world scenarios. Even though it is a challenging task, a dataset containing real corrupted fingerprints and their corresponding ground truth images can be collected. This could be useful to improve generalization and performance of reconstruction models. Also, the proposed model in this paper can be extended to include prior information such as minutae templates and the use of Bayesian inference concepts to define the cost functions, which as proven to be useful in some applications that involve adversarial models.
